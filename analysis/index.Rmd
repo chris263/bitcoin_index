@@ -80,8 +80,7 @@ for( i in c(1:nRange)){
 
 index_summary$date <- as.Date(index_summary$date)
 
-
-cat("Today's Multiple Mayer's index is: ", index_summary[index_summary$date == Sys.Date(), "index"],"\n",
+cat("Today", as.character(Sys.Date()), " Multiple Mayer's index is: ", round(index_summary[index_summary$date == Sys.Date(), "index"],2),"\n",
     "Price = ", bitcoin_2023[bitcoin_2023$timestamp == Sys.Date(), "close"],"\n",
     "The decision is: ", index_summary[index_summary$date == Sys.Date(), "decision"], "\n")
 
