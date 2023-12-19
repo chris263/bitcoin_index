@@ -2,7 +2,9 @@
 title: "Analise Bitcoin"
 author: "Christiano Simoes"
 date: "2023-12-18"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -33,7 +35,6 @@ rm(list = ls())
 list_2023 <- crypto_list(only_active=TRUE) %>% dplyr::filter(first_historical_data<="2023-01-01", last_historical_data>="2023-12-18")
 
 todayDate <- gsub("-","", Sys.Date())
-
 bitcoin_2023 <- crypto_history(
                             coin_list = list_2023,
                             convert = "BRL",
@@ -51,25 +52,19 @@ bitcoin_2023$timestamp <- as.Date(bitcoin_2023$timestamp)
 
 Seguindo a recomendação para o dia:
 
-```{r pressure, echo=FALSE}
+```{r pressure, warning=FALSE, echo=FALSE}
 
 nDays <- 200 # get 200 days for moving average
-plotDays <- 5*365 # How many days to show in plot (5 years)
+plotDays <- 7*365 # How many days to show in plot (7 years)
 
 bitcoin_2023 <- as.data.frame(bitcoin_2023[order(desc(bitcoin_2023$timestamp)),])
-
-# mma_200 <- mean(as.vector(bitcoin_2023[1:nDays, "close"]))
-# mayers_index <- bitcoin_2023$close[1]/mma_200
-# 
-# cat("Rigth now ", as.character(Sys.time()),"\n",
-#     "the index is " = mayers_index, "\n", 
-#     "the price is "= bitcoin_2023$close[1], "\n")
 
 nRange <- nrow(bitcoin_2023) - nDays
 index_summary <- data.frame(index = rep(NA, nRange), 
                             date = rep(NA, nRange), 
                             decision = rep(NA, nRange),
-                            color = rep(NA,nRange))
+                            color = rep(NA,nRange),
+                            stop = rep(NA,nRange))
 
 
 for( i in c(1:nRange)){
@@ -78,11 +73,12 @@ for( i in c(1:nRange)){
   index_summary$index[i] <- mayers_index
   index_summary$date[i] <- as.vector(bitcoin_2023$timestamp[i])
   if(mayers_index <= 1){index_summary$decision[i] <- "Strong Buy"; index_summary$color[i] <- "#69b3a2"}
-  if(mayers_index > 1 & mayers_index <= 1.5){index_summary$decision[i] <- "Wait to Buy";  index_summary$color[i] <- "#0000E2"}
+  if(mayers_index > 1 & mayers_index <= 1.5){index_summary$decision[i] <- "Wait to Buy or Sell";  index_summary$color[i] <- "#0000E2"}
   if(mayers_index > 1.5 & mayers_index <= 2){index_summary$decision[i] <- "Sell"; index_summary$color[i] <- "#FF7F00"}
   if(mayers_index > 2){index_summary$decision[i] <- "Strong Sell"; index_summary$color[i] <- "#FF0000"}
   
 }
+
 
 index_summary$date <- as.Date(index_summary$date)
 
@@ -92,19 +88,14 @@ cat("Today", as.character(Sys.Date()), " Multiple Mayer's index is: ", round(ind
 
 ```
 
-## Análise Gráfica 5 Anos
+## Análise Gráfica 7 Anos
 
-```{r grafico, echo=FALSE}
+```{r grafico, warning=FALSE, echo=FALSE}
 
 # Convert to factor
 index_summary$color <- as.factor(index_summary$color)  
 index_summary$decision <- as.factor(index_summary$decision)  
 
-# Create a named vector of colors corresponding to unique values
-color_legend_labels <- c("Strong Buy" = "#69b3a2", 
-                        "Wayte to buy" = "#0000E2", 
-                        "Sell" = "#FF7F00",
-                        "Strong Sell" = "#FF0000")
 index_summary <- index_summary[order(desc(index_summary$date)),]
 
 printPlot <- function(inDays){
@@ -130,9 +121,18 @@ print(printPlot(plotDays))
 
 ```
 
+## Análise Gráfica 1 Ano 
+
+```{r yearPlot, warning=FALSE, echo=FALSE}
+# Show the plot
+yearDays <- 365
+print(printPlot(yearDays))
+```
+
+
 ## Análise Gráfica 1 Mês 
 
-```{r}
+```{r monthPlot, warning=FALSE, echo=FALSE}
 # Show the plot
 monthDays <- 30
 print(printPlot(monthDays))
