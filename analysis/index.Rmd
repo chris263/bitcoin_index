@@ -20,8 +20,8 @@ set.seed(1234)
 ## Resumo
 
 A ideia é capturar os dados usando como fonte o yahoo finance. A partir disso, 
-calculamos o indice de Mayer(valor do momento do bitcoin dividido pela média mível
-dos últimos 200 dias). O intervalo de dados que estou usando é de Janeiro de 2017 até hoje.  
+calculamos o indice de Mayer(valor do momento do bitcoin dividido pela média móvel
+dos últimos 200 dias).   
 A decisão é tomada de de acordo com:  
 Index < 1 significa "Strong Buy".  
 1 < Index < 1.5 Significa esperar um pouco para obersvar o mercado.  
