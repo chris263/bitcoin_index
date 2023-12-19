@@ -361,7 +361,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -372,8 +372,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -386,9 +386,9 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>bitcoin_index/</code> <span
@@ -411,18 +411,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -513,13 +516,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong4537715">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomchris263bitcoinindextree87f9398f2aa644ffebf968ba97419c09a299681btargetblank87f9398a">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> 4537715
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/chris263/bitcoin_index/tree/87f9398f2aa644ffebf968ba97419c09a299681b" target="_blank">87f9398</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong4537715"
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomchris263bitcoinindextree87f9398f2aa644ffebf968ba97419c09a299681btargetblank87f9398a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -528,7 +533,8 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 4537715.
+The results in this page were generated with repository version
+<a href="https://github.com/chris263/bitcoin_index/tree/87f9398f2aa644ffebf968ba97419c09a299681b" target="_blank">87f9398</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -543,7 +549,13 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .RData
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
     Ignored:    analysis/figure/
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -590,10 +602,27 @@ Message
 <tbody>
 <tr>
 <td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/chris263/bitcoin_index/87f9398f2aa644ffebf968ba97419c09a299681b/docs/index.html" target="_blank">87f9398</a>
+</td>
+<td>
+chris263
+</td>
+<td>
+2023-12-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
 Rmd
 </td>
 <td>
-4537715
+<a href="https://github.com/chris263/bitcoin_index/blob/453771500c597437e7a6f9df8c18a9ad94996a9a/analysis/index.Rmd" target="_blank">4537715</a>
 </td>
 <td>
 chris263
@@ -610,7 +639,7 @@ adicionando codigo para monitorar bitcoin
 html
 </td>
 <td>
-4537715
+<a href="https://rawcdn.githack.com/chris263/bitcoin_index/453771500c597437e7a6f9df8c18a9ad94996a9a/docs/index.html" target="_blank">4537715</a>
 </td>
 <td>
 chris263
@@ -627,7 +656,7 @@ adicionando codigo para monitorar bitcoin
 Rmd
 </td>
 <td>
-7df9a29
+<a href="https://github.com/chris263/bitcoin_index/blob/7df9a299ee68d2a5fb24c4737598765b62391314/analysis/index.Rmd" target="_blank">7df9a29</a>
 </td>
 <td>
 chris263
@@ -662,9 +691,9 @@ Index &gt; 2 Venda logo!!.</p>
 <div id="calculando-o-indice" class="section level2">
 <h2>Calculando o Indice</h2>
 <p>Seguindo a recomendação para o dia:</p>
-<pre><code>Today&#39;s Multiple Mayer&#39;s index is:  1.657139 
+<pre><code>Today&#39;s Multiple Mayer&#39;s index is:  1.352423 
  Price =  204330.4 
- The decision is:  Sell </code></pre>
+ The decision is:  Wait to Buy </code></pre>
 </div>
 <div id="análise-gráfica" class="section level2">
 <h2>Análise Gráfica</h2>
@@ -693,7 +722,7 @@ Date
 <tbody>
 <tr>
 <td>
-4537715
+<a href="https://github.com/chris263/bitcoin_index/blob/453771500c597437e7a6f9df8c18a9ad94996a9a/docs/figure/index.Rmd/grafico-1.png" target="_blank">4537715</a>
 </td>
 <td>
 chris263
@@ -739,36 +768,33 @@ attached base packages:
 
 other attached packages:
 [1] hrbrthemes_0.8.0 ggplot2_3.4.4    dplyr_1.1.3      crypto2_1.4.5   
-[5] workflowr_1.7.1 
 
 loaded via a namespace (and not attached):
  [1] gtable_0.3.4            xfun_0.41               bslib_0.5.1            
- [4] processx_3.8.2          callr_3.7.3             vctrs_0.6.4            
- [7] tools_4.3.2             ps_1.7.5                generics_0.1.3         
-[10] curl_5.1.0              tibble_3.2.1            fansi_1.0.5            
-[13] highr_0.10              pkgconfig_2.0.3         lifecycle_1.0.4        
-[16] farver_2.1.1            compiler_4.3.2          stringr_1.5.0          
-[19] git2r_0.33.0            progress_1.2.2          munsell_0.5.0          
-[22] getPass_0.2-4           httpuv_1.6.12           fontquiver_0.2.1       
-[25] fontLiberation_0.1.0    htmltools_0.5.7         sass_0.4.7             
-[28] yaml_2.3.7              Rttf2pt1_1.3.12         later_1.3.1            
-[31] pillar_1.9.0            crayon_1.5.2            jquerylib_0.1.4        
-[34] whisker_0.4.1           extrafontdb_1.0         tidyr_1.3.0            
-[37] ellipsis_0.3.2          gfonts_0.2.0            cachem_1.0.8           
-[40] mime_0.12               fontBitstreamVera_0.1.1 tidyselect_1.2.0       
-[43] digest_0.6.33           stringi_1.7.12          purrr_1.0.2            
-[46] labeling_0.4.3          extrafont_0.19          rprojroot_2.0.4        
-[49] fastmap_1.1.1           grid_4.3.2              colorspace_2.1-0       
-[52] cli_3.6.1               magrittr_2.0.3          crul_1.4.0             
-[55] utf8_1.2.4              withr_2.5.2             prettyunits_1.2.0      
-[58] gdtools_0.3.5           scales_1.2.1            promises_1.2.1         
-[61] lubridate_1.9.3         timechange_0.2.0        rmarkdown_2.25         
-[64] httr_1.4.7              hms_1.1.3               shiny_1.7.5.1          
-[67] evaluate_0.23           knitr_1.45              rlang_1.1.2            
-[70] Rcpp_1.0.11             xtable_1.8-4            httpcode_0.3.0         
-[73] glue_1.6.2              rstudioapi_0.15.0       jsonlite_1.8.7         
-[76] R6_2.5.1                plyr_1.8.9              systemfonts_1.0.5      
-[79] fs_1.6.3               </code></pre>
+ [4] vctrs_0.6.4             tools_4.3.2             generics_0.1.3         
+ [7] curl_5.1.0              tibble_3.2.1            fansi_1.0.5            
+[10] highr_0.10              pkgconfig_2.0.3         lifecycle_1.0.4        
+[13] farver_2.1.1            compiler_4.3.2          stringr_1.5.0          
+[16] git2r_0.33.0            progress_1.2.2          munsell_0.5.0          
+[19] httpuv_1.6.12           fontquiver_0.2.1        fontLiberation_0.1.0   
+[22] htmltools_0.5.7         sass_0.4.7              yaml_2.3.7             
+[25] Rttf2pt1_1.3.12         later_1.3.1             pillar_1.9.0           
+[28] crayon_1.5.2            jquerylib_0.1.4         whisker_0.4.1          
+[31] extrafontdb_1.0         tidyr_1.3.0             ellipsis_0.3.2         
+[34] gfonts_0.2.0            cachem_1.0.8            mime_0.12              
+[37] fontBitstreamVera_0.1.1 tidyselect_1.2.0        digest_0.6.33          
+[40] stringi_1.7.12          purrr_1.0.2             labeling_0.4.3         
+[43] extrafont_0.19          rprojroot_2.0.4         fastmap_1.1.1          
+[46] grid_4.3.2              colorspace_2.1-0        cli_3.6.1              
+[49] magrittr_2.0.3          crul_1.4.0              utf8_1.2.4             
+[52] withr_2.5.2             prettyunits_1.2.0       gdtools_0.3.5          
+[55] scales_1.2.1            promises_1.2.1          lubridate_1.9.3        
+[58] timechange_0.2.0        rmarkdown_2.25          workflowr_1.7.1        
+[61] hms_1.1.3               shiny_1.7.5.1           evaluate_0.23          
+[64] knitr_1.45              rlang_1.1.2             Rcpp_1.0.11            
+[67] xtable_1.8-4            glue_1.6.2              httpcode_0.3.0         
+[70] rstudioapi_0.15.0       jsonlite_1.8.7          R6_2.5.1               
+[73] plyr_1.8.9              systemfonts_1.0.5       fs_1.6.3               </code></pre>
 </div>
 </div>
 
