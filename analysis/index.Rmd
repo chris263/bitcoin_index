@@ -43,7 +43,7 @@ bitcoin_2023 <- crypto_history(
                             interval = "1d"
                           )
 
-
+bitcoin_2023$timestamp <- as.Date(bitcoin_2023$timestamp)
 
 ```
 
@@ -52,20 +52,26 @@ bitcoin_2023 <- crypto_history(
 Seguindo a recomendação para o dia:
 
 ```{r pressure, echo=FALSE}
-# get 200 days
-nDays <- 200
+
+nDays <- 200 # get 200 days for moving average
+plotDays <- 5*365 # How many days to show in plot (5 years)
+
 bitcoin_2023 <- as.data.frame(bitcoin_2023[order(desc(bitcoin_2023$timestamp)),])
-mma_200 <- mean(as.vector(bitcoin_2023[1:nDays, "close"]))
-mayers_index <- bitcoin_2023$close[1]/mma_200
+
+# mma_200 <- mean(as.vector(bitcoin_2023[1:nDays, "close"]))
+# mayers_index <- bitcoin_2023$close[1]/mma_200
+# 
+# cat("Rigth now ", as.character(Sys.time()),"\n",
+#     "the index is " = mayers_index, "\n", 
+#     "the price is "= bitcoin_2023$close[1], "\n")
 
 nRange <- nrow(bitcoin_2023) - nDays
-
 index_summary <- data.frame(index = rep(NA, nRange), 
                             date = rep(NA, nRange), 
                             decision = rep(NA, nRange),
                             color = rep(NA,nRange))
 
-bitcoin_2023$timestamp <- as.Date(bitcoin_2023$timestamp)
+
 for( i in c(1:nRange)){
   media <- mean(as.vector(bitcoin_2023[i:(i+nDays), "close"]))
   mayers_index <- bitcoin_2023$close[i]/media
@@ -86,7 +92,7 @@ cat("Today", as.character(Sys.Date()), " Multiple Mayer's index is: ", round(ind
 
 ```
 
-## Análise Gráfica
+## Análise Gráfica 5 Anos
 
 ```{r grafico, echo=FALSE}
 
@@ -100,25 +106,35 @@ color_legend_labels <- c("Strong Buy" = "#69b3a2",
                         "Sell" = "#FF7F00",
                         "Strong Sell" = "#FF0000")
 index_summary <- index_summary[order(desc(index_summary$date)),]
-plot_data <- index_summary[1:1600,]
+
+printPlot <- function(inDays){
+  plot_data <- index_summary[1:inDays,]
+  
+  # Creating Color schema
+  unique_colors <- unique(plot_data$color)
+  unique_labels <- unique(plot_data$decision)
+  p1 <- plot_data %>%
+             ggplot(aes(x = date, y = index)) +
+             geom_line(color = "grey") +
+             geom_hline(yintercept=c(2.0, 1.5, 1.0), linetype="dashed", color = c("red","blue","green")) +
+             geom_point(aes(fill = color), shape = 21, color = "black", size = 3) +
+             scale_fill_identity(guide = "legend", labels = unique_labels, breaks = unique_colors) +  # Customize legend labels
+             theme_ipsum() +
+             ggtitle("Evolution of Bitcoin Index (Multiple Mayer 200)")
  
- 
-# Creating Color schema
-unique_colors <- unique(plot_data$color)
-unique_labels <- unique(plot_data$decision)
- 
-p1 <- plot_data %>%
- ggplot(aes(x = date, y = index)) +
- geom_line(color = "grey") +
- geom_hline(yintercept=c(2.0, 1.5, 1.0), linetype="dashed", color = c("red","blue","green")) +
- geom_point(aes(fill = color), shape = 21, color = "black", size = 3) +
- scale_fill_identity(guide = "legend", labels = unique_labels, breaks = unique_colors) +  # Customize legend labels
- theme_ipsum() +
- ggtitle("Evolution of Bitcoin Index (Multiple Mayer 200)")
- 
+}
+
 # Show the plot
-print(p1)
+print(printPlot(plotDays))
 
 
+```
+
+## Análise Gráfica 1 Mês 
+
+```{r}
+# Show the plot
+monthDays <- 30
+print(printPlot(monthDays))
 ```
 
