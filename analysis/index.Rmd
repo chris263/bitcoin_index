@@ -31,15 +31,22 @@ Index > 2 Venda logo!!.
 ```{r capturando dados, include=FALSE}
 
 rm(list = ls())
-# # Retrieving market history for ALL crypto currencies
+
+# Defining year to be analyzed
+plotDays <- 7*365 # How many days to show in plot (8 years)
+startDate <- Sys.Date()-plotDays
+
+# Retrieving market history
 list_2023 <- crypto_list(only_active=TRUE) %>% dplyr::filter(first_historical_data<="2023-01-01", last_historical_data>="2023-12-18")
 
 todayDate <- gsub("-","", Sys.Date())
+startDate <- gsub("-", "", startDate)
+
 bitcoin_2023 <- crypto_history(
                             coin_list = list_2023,
                             convert = "BRL",
                             limit = 1,
-                            start_date = "20170101",
+                            start_date = startDate,
                             end_date = todayDate,
                             interval = "1d"
                           )
@@ -55,7 +62,6 @@ Seguindo a recomendação para o dia:
 ```{r pressure, warning=FALSE, echo=FALSE}
 
 nDays <- 200 # get 200 days for moving average
-plotDays <- 7*365 # How many days to show in plot (7 years)
 
 bitcoin_2023 <- as.data.frame(bitcoin_2023[order(desc(bitcoin_2023$timestamp)),])
 
