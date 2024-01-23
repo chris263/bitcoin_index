@@ -19,7 +19,7 @@ set.seed(1234)
 
 ## Resumo
 
-A ideia é capturar os dados usando como fonte o yahoo finance. A partir disso, 
+A ideia é capturar os dados usando como fonte o binancer. A partir disso, 
 calculamos o indice de Mayer(valor do momento do bitcoin dividido pela média móvel
 dos últimos 200 dias).   
 A decisão é tomada de de acordo com:  
@@ -28,56 +28,76 @@ Index < 1 significa "Strong Buy".
 Index > 1.5 Significa vender.  
 Index > 2 Venda logo!!.
 
-```{r capturando dados, include=FALSE}
-
+```{r gettinData, warning=FALSE, message=FALSE, echo=FALSE}
 rm(list = ls())
+library(binancer)
 
-# Defining year to be analyzed
-plotDays <- 7*365 # How many days to show in plot (8 years)
-startDate <- Sys.Date()-plotDays
+klines <- binance_klines('BTCBRL',
+                         interval = '1d',
+                         start_time = '2023-01-01',
+                         end_time = Sys.Date())
 
-# Retrieving market history
-list_2023 <- crypto_list(only_active=TRUE) %>% dplyr::filter(first_historical_data<="2023-01-01", last_historical_data>="2023-12-18")
+# Initialize an empty list to store the historical data
+historical_data <- c()
 
-todayDate <- gsub("-","", Sys.Date())
-startDate <- gsub("-", "", startDate)
+num_years = 4
+# Make multiple requests to get historical data
+for (i in 1:num_years) {
+  start_time_request <- Sys.Date() - 365*i
+  end_time_request <- Sys.Date() - 365*(i-1)
 
-bitcoin_2023 <- crypto_history(
-                            coin_list = list_2023,
-                            convert = "BRL",
-                            limit = 1,
-                            start_date = startDate,
-                            end_date = todayDate,
-                            interval = "1d"
-                          )
+  res <- binance_klines('BTCBRL',
+                         interval = '1d',
+                         start_time = start_time_request,
+                         end_time = end_time_request)
+  
+  # Extract and append the parsed content to the list
+  historical_data <- rbind(historical_data, res)
+}
 
-bitcoin_2023$timestamp <- as.Date(bitcoin_2023$timestamp)
+historical_data$open_time <- as.Date(historical_data$open_time)
+historical_data <- historical_data[order(-historical_data$open_time),]
+library(dplyr)
+historical_data <- historical_data[!duplicated(historical_data$open_time),]
+
+# Create a data frame
+crypto_data <- data.frame(
+  Open = historical_data$open,
+  High = historical_data$high,
+  Low = historical_data$low,
+  Close = historical_data$close,
+  Volume = historical_data$volume
+)
+
+rownames(crypto_data) <- as.character(historical_data$open_time)
+
+quantmod::chartSeries(
+  x =    head(crypto_data, 200),
+  name = 'BTCBRL',
+  theme = quantmod::chartTheme('white')
+)
+
+quantmod::addMACD()
+quantmod::addBBands()
 
 ```
 
 ## Calculando o Indice
 
-Seguindo a recomendação para o dia:
-
-```{r pressure, warning=FALSE, echo=FALSE}
-
-nDays <- 200 # get 200 days for moving average
-
-bitcoin_2023 <- as.data.frame(bitcoin_2023[order(desc(bitcoin_2023$timestamp)),])
-
-nRange <- nrow(bitcoin_2023) - nDays
+```{r index, echo=FALSE}
+nDays = 200
+bitcoin_2023 <- crypto_data
+nRange <- nrow(bitcoin_2023)- nDays
 index_summary <- data.frame(index = rep(NA, nRange), 
                             date = rep(NA, nRange), 
                             decision = rep(NA, nRange),
                             color = rep(NA,nRange),
                             stop = rep(NA,nRange))
-
-
 for( i in c(1:nRange)){
-  media <- mean(as.vector(bitcoin_2023[i:(i+nDays), "close"]))
-  mayers_index <- bitcoin_2023$close[i]/media
+  media <- mean(as.vector(bitcoin_2023[i:(i+nDays-1), "Close"]))
+  mayers_index <- bitcoin_2023$Close[i]/media
   index_summary$index[i] <- mayers_index
-  index_summary$date[i] <- as.vector(bitcoin_2023$timestamp[i])
+  index_summary$date[i] <- rownames(bitcoin_2023)[i]
   if(mayers_index <= 1){index_summary$decision[i] <- "Strong Buy"; index_summary$color[i] <- "#69b3a2"}
   if(mayers_index > 1 & mayers_index <= 1.5){index_summary$decision[i] <- "Wait to Buy or Sell";  index_summary$color[i] <- "#0000E2"}
   if(mayers_index > 1.5 & mayers_index <= 2){index_summary$decision[i] <- "Sell"; index_summary$color[i] <- "#FF7F00"}
@@ -85,16 +105,23 @@ for( i in c(1:nRange)){
   
 }
 
+#format method, which is necessary for formating in a data.frame   
+format.money  <- function(x, ...) {
+  paste0("R$ ", formatC(as.numeric(x), format="f", digits=2, big.mark=","))
+}
 
 index_summary$date <- as.Date(index_summary$date)
-
-cat("Today", as.character(Sys.Date()), " Multiple Mayer's index is: ", round(index_summary[index_summary$date == Sys.Date(), "index"],2),"\n",
-    "Price = ", bitcoin_2023[bitcoin_2023$timestamp == Sys.Date(), "close"],"\n",
+bitcoin_2023$timestamp <- rownames(bitcoin_2023)
+lastDate <- max(bitcoin_2023$timestamp)
+cat(" Last date:", as.character(Sys.Date()), " Multiple Mayer's index is: ", round(index_summary[index_summary$date == Sys.Date(), "index"],2),"\n",
+    "Price = ", format.money(bitcoin_2023[bitcoin_2023$timestamp == lastDate, "Close"]),"\n",
     "The decision is: ", index_summary[index_summary$date == Sys.Date(), "decision"], "\n")
+
+
 
 ```
 
-## Análise Gráfica 7 Anos
+## Análise Gráfica 4 Anos
 
 ```{r grafico, warning=FALSE, echo=FALSE}
 
@@ -121,6 +148,7 @@ printPlot <- function(inDays){
  
 }
 
+plotDays <- 365*num_years
 # Show the plot
 print(printPlot(plotDays))
 
