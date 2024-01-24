@@ -32,44 +32,42 @@ Index > 2 Venda logo!!.
 rm(list = ls())
 library(binancer)
 
-klines <- binance_klines('BTCBRL',
-                         interval = '1d',
-                         start_time = '2023-01-01',
-                         end_time = Sys.Date())
-
-# Initialize an empty list to store the historical data
-historical_data <- c()
-
 num_years = 4
-# Make multiple requests to get historical data
-for (i in 1:num_years) {
-  start_time_request <- Sys.Date() - 365*i
-  end_time_request <- Sys.Date() - 365*(i-1)
 
-  res <- binance_klines('BTCBRL',
+loadDF <- read.csv("../data/database_crypto.csv")
+
+lastDate <- as.Date(max(loadDF$X))-3
+todayDate <- as.Date(Sys.Date())
+
+rownames(loadDF) <- loadDF$X
+loadDF <- loadDF[,-1]
+daysLength <- as.numeric(todayDate - lastDate)
+
+if(daysLength >0){
+  historical_data <- binance_klines('BTCBRL',
                          interval = '1d',
-                         start_time = start_time_request,
-                         end_time = end_time_request)
+                         start_time = lastDate,
+                         end_time = todayDate)
+  # Create a data frame
+  crypto_data <- data.frame(
+    Open = historical_data$open,
+    High = historical_data$high,
+    Low = historical_data$low,
+    Close = historical_data$close,
+    Volume = historical_data$volume
+  )
   
-  # Extract and append the parsed content to the list
-  historical_data <- rbind(historical_data, res)
+  rownames(crypto_data) <- as.Date(historical_data$open_time)
+  
+  crypto_data <- rbind(crypto_data, loadDF)
+  library(dplyr)
+  crypto_data$date <- rownames(crypto_data)
+  crypto_data <- crypto_data[!duplicated(crypto_data$date),]
+  crypto_data <- crypto_data %>% select(Open, High, Low, Close, Volume)
+}else{
+  crypto_data <- loadDF
 }
 
-historical_data$open_time <- as.Date(historical_data$open_time)
-historical_data <- historical_data[order(-historical_data$open_time),]
-library(dplyr)
-historical_data <- historical_data[!duplicated(historical_data$open_time),]
-
-# Create a data frame
-crypto_data <- data.frame(
-  Open = historical_data$open,
-  High = historical_data$high,
-  Low = historical_data$low,
-  Close = historical_data$close,
-  Volume = historical_data$volume
-)
-
-rownames(crypto_data) <- as.character(historical_data$open_time)
 
 quantmod::chartSeries(
   x =    head(crypto_data, 200),
@@ -79,6 +77,10 @@ quantmod::chartSeries(
 
 quantmod::addMACD()
 quantmod::addBBands()
+
+write.csv(crypto_data, "../data/database_crypto.csv", row.names = T)
+
+
 
 ```
 
@@ -113,8 +115,9 @@ format.money  <- function(x, ...) {
 index_summary$date <- as.Date(index_summary$date)
 bitcoin_2023$timestamp <- rownames(bitcoin_2023)
 lastDate <- max(bitcoin_2023$timestamp)
+todayRate <- binance_avg_price('BTCBRL')
 cat(" Last date:", as.character(Sys.Date()), " Multiple Mayer's index is: ", round(index_summary[index_summary$date == Sys.Date(), "index"],2),"\n",
-    "Price = ", format.money(bitcoin_2023[bitcoin_2023$timestamp == lastDate, "Close"]),"\n",
+    "Price = ", format.money(todayRate$price),"\n",
     "The decision is: ", index_summary[index_summary$date == Sys.Date(), "decision"], "\n")
 
 
